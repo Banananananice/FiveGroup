@@ -18,8 +18,6 @@ def foreach_batch_function(batch_df, batch_id):
 print("开始收集数据...")
 query = cleaned_df.writeStream.foreachBatch(foreach_batch_function).start()
 
-# 等待一段时间收集数据（实际生产中建议使用触发器）
-query.awaitTermination(timeout=10)
 
 query.stop()
 print("数据收集完成！")
@@ -42,7 +40,7 @@ print("-" * 50)
 daily_sales = collected_df.groupby('上架日期')['销量'].sum().reset_index()
 daily_sales['上架日期'] = pd.to_datetime(daily_sales['上架日期'])
 daily_sales.set_index('上架日期', inplace=True)
-daily_sales = daily_sales.asfreq('D').fillna(0)
+
 
 print("\n销量趋势:")
 print(daily_sales.tail())
